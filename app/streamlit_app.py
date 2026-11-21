@@ -671,7 +671,7 @@ def bottom_line(lifts: pd.DataFrame, seg: pd.DataFrame, curves: pd.DataFrame) ->
         <li><strong>A model does not beat the simple rule.</strong> Without an uplift model the optimal rule is to first send the email to the customers
         who bought 'Both' merchandise in the past, and then at random. With the uplift scoring, the customers who get the highest scoring are exactly the
         ones with 'Both' as 'Buyer type' feature. The model found the same result of the data analysis, but doesn't add predictive power.</li>
-        <li><strong>Recommendation:</strong> if an email costs less than about ${rest_email:.2f}, email everyone.
+        <li><strong>Recommendation:</strong> at 50% margin, if an email costs less than about ${rest_email:.2f}, email everyone.
         Between ${rest_email:.2f} and ${both_email:.2f}, only email the 'Both' buyer types, without using an uplift
         model. Above ${both_email:.2f}, don't email.</li>
       </ul>
