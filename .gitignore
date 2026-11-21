@@ -13,3 +13,6 @@ wheels/
 data/raw/*.csv
 data/*.duckdb
 data/*.duckdb.wal
+
+# Local tool settings (Claude Code)
+.claude/
