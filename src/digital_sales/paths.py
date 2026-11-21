@@ -9,3 +9,4 @@ RAW_CSV = RAW_DIR / "hillstrom.csv"
 SOURCE_JSON = RAW_DIR / "source.json"
 DB_PATH = DATA_DIR / "warehouse.duckdb"
 SQL_DIR = PROJECT_ROOT / "sql"
+RESULTS_DIR = PROJECT_ROOT / "results"   # small tables the dashboard reads (committed)

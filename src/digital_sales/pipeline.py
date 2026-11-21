@@ -1,3 +1,5 @@
+import pandas as pd
+
 from digital_sales.experiment import (
     covariate_balance,
     lift_tests,
@@ -6,6 +8,7 @@ from digital_sales.experiment import (
     srm_test,
 )
 from digital_sales.get_data import build_database, download_raw
+from digital_sales.paths import RESULTS_DIR
 from digital_sales.quality import assert_no_errors, run_quality_checks
 from digital_sales.segments import (
     head_to_head,
@@ -23,6 +26,7 @@ from digital_sales.uplift import (
     decile_profile,
     load_uplift_base,
     qini_table,
+    targeting_curves,
 )
 
 
@@ -35,6 +39,13 @@ def main() -> None:
     run_ab_readout()
     run_segment_effects()
     run_uplift_model()
+    print(f"\nResults tables written to {RESULTS_DIR}")
+
+
+def save_result(table: pd.DataFrame, name: str) -> None:
+    """Write one table to results/<name>.csv, where the dashboard reads it."""
+    RESULTS_DIR.mkdir(exist_ok=True)
+    table.to_csv(RESULTS_DIR / f"{name}.csv", index=False)
 
 
 def run_ab_readout() -> None:
@@ -48,7 +59,9 @@ def run_ab_readout() -> None:
     print(f"Largest |SMD|: {smd.abs().max().max():.3f}  (balanced if < 0.1)")
 
     print("\nLift analysis")
-    print(lift_tests(df).round(3).to_string(index=False))
+    lifts = lift_tests(df)
+    print(lifts.round(3).to_string(index=False))
+    save_result(lifts, "ab_lifts")
 
     print("\nSpend per buyer")
     print(spend_per_buyer(df).round(3).to_string())
@@ -62,7 +75,9 @@ def run_segment_effects() -> None:
     print(segment_sizes(seg).to_string())
 
     print("\nVisit lift by segment")
-    print(lift_table(segment_lifts(seg)).to_string())
+    lifts = segment_lifts(seg)
+    print(lift_table(lifts).to_string())
+    save_result(lifts, "segment_lifts")
 
     print("\nMen's vs women's email within each segment")
     print(head_to_head(seg).round(4).to_string(index=False))
@@ -70,6 +85,7 @@ def run_segment_effects() -> None:
     print("\nInteraction tests: significant differences between segments (Holm p < 0.05)")
     het = interaction_tests(seg)
     print(het[het["p_holm"] < 0.05].round(4).to_string(index=False))
+    save_result(het, "interaction_tests")
 
 
 def run_uplift_model() -> None:
@@ -84,17 +100,22 @@ def run_uplift_model() -> None:
     print(coefficient_table(df).round(3).to_string())
 
     print("\nQini coefficients: extra visits per 1,000 customers over random targeting (bootstrap 95% CI)")
-    print(qini_table(df).round(2).to_string())
+    qini = qini_table(df)
+    print(qini.round(2).to_string())
+    save_result(qini.rename_axis("ranking").reset_index(), "qini")
 
     print("\nVisit lift by decile of predicted uplift (1 = highest)")
-    deciles = decile_lifts(df)[["decile", "predicted_uplift", "abs_lift", "abs_ci_low", "abs_ci_high"]]
-    print(deciles.round(3).to_string(index=False))
+    deciles = decile_lifts(df)
+    print(deciles[["decile", "predicted_uplift", "abs_lift", "abs_ci_low", "abs_ci_high"]].round(3)
+          .to_string(index=False))
+    save_result(deciles, "deciles")
 
     print("\nWho gets targeted: mean features of the top, middle and bottom of the ranking")
     print(decile_profile(df).round(2).to_string())
 
     print("\nMost profitable share to email, per 1,000 customers (T-learner ranking, smoothed)")
     print(best_share(df).round(2).to_string(index=False))
+    save_result(targeting_curves(df), "targeting_curves")
 
 
 if __name__ == "__main__":

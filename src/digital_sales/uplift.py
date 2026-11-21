@@ -177,3 +177,44 @@ def best_share(df: pd.DataFrame, ranking: str = "uplift_rank") -> pd.DataFrame:
         rows.append({"cost per email ($)": cost, "best share emailed": frac[best],
                      "profit at best share ($)": profit[best], "profit emailing everyone ($)": profit[-1]})
     return pd.DataFrame(rows)
+
+
+def block_line(frac: np.ndarray, curve: np.ndarray, score: pd.Series) -> np.ndarray:
+    """Expected curve of a ranking with tied scores: a straight line within each block of equal scores.
+
+    Customers with the same score are emailed in random order, so in expectation each extra email in a block
+    adds that block's average. Only the block ends carry information; anything in between is noise.
+    """
+    shares = (score.value_counts().sort_index(ascending=False).cumsum() / len(score)).to_numpy()
+    knots = np.r_[0.0, shares]                                       # 0, end of block 1, ..., 1
+    return np.interp(frac, knots, np.interp(knots, frac, curve))
+
+
+def targeting_curves(df: pd.DataFrame, step: int = 100) -> pd.DataFrame:
+    """Extra visits and extra revenue per 1,000 customers by share emailed, for each ranking.
+
+    Kept every `step`-th customer. The column extra_revenue_per_1000_smoothed is the Gaussian-smoothed curve for
+    the two models, and the expected straight-line curve (block_line) for the buyer-type rule, whose order after
+    the "Both" buyers is random. Profit at any margin m and cost c is then
+    m * extra_revenue_per_1000_smoothed - c * 1000 * share_emailed (smoothing a straight line changes nothing).
+
+    SIGMA = 5% was checked on the buyer-type rule, whose true curve is known: over 30 random orders it lost the
+    least profit when its peak was used to choose how many customers to email (widths from 1% to 20% tried).
+    """
+    tables = []
+    for name, col in SCORES.items():
+        frac, visits = uplift_curve(df["visit"], df["t"], df[col])
+        _, revenue = uplift_curve(df["spend"], df["t"], df[col])
+        if name == "Buyer-type rule":
+            smoothed = block_line(frac, revenue, df[col])
+        else:
+            smoothed = smooth(revenue, int(SIGMA * len(frac)))      # smooth first, then thin out
+        idx = np.r_[0:len(frac):step, len(frac) - 1]
+        tables.append(pd.DataFrame({
+            "ranking": name,
+            "share_emailed": frac[idx],
+            "extra_visits_per_1000": visits[idx],
+            "extra_revenue_per_1000": revenue[idx],
+            "extra_revenue_per_1000_smoothed": smoothed[idx],
+        }))
+    return pd.concat(tables, ignore_index=True)

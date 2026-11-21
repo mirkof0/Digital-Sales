@@ -1,0 +1,27 @@
+# Theme of the homepage (mirkof0.github.io/homepage): sage page, white rounded panels, Sora type.
+# Light and dark follow the viewer's system setting; both can be picked in the app menu.
+
+[theme]
+font = "Sora:https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap"
+headingFont = "Sora:https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap"
+baseRadius = "large"
+buttonRadius = "full"
+
+[theme.light]
+primaryColor = "#4f7a5f"
+backgroundColor = "#d6e3d7"
+secondaryBackgroundColor = "#f1f5f1"
+textColor = "#0f110f"
+linkColor = "#4f7a5f"
+borderColor = "#d0d7d1"
+
+[theme.dark]
+primaryColor = "#9cc2a8"
+backgroundColor = "#0a0d0b"
+secondaryBackgroundColor = "#1a221c"
+textColor = "#edf2ee"
+linkColor = "#9cc2a8"
+borderColor = "#33403a"
+
+[browser]
+gatherUsageStats = false

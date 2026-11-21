@@ -1,0 +1,181 @@
+/* Project summary page. Same look as the homepage: sage page, white rounded panels, Sora type.
+   Colour tokens (--page, --panel, --ink, ...) are set from Python for the active light/dark theme. */
+
+:root { --sans: "Sora", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+/* ---------------------------------------------------------------- page frame */
+
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stMainBlockContainer"] { max-width: 1240px; padding: 32px 32px 56px; }
+
+/* panels: st.container(key="panel-...") */
+[class*="st-key-panel"] { padding: 56px 64px; border-radius: 44px; background: var(--panel); gap: 20px; }
+.st-key-panel-bottom { background: var(--contact-bg); }
+
+/* ---------------------------------------------------------------- text */
+
+.sx, .sx * { box-sizing: border-box; }
+.sx { color: var(--ink); font: 400 16px/1.7 var(--sans); }
+.sx p, .sx h1, .sx h2, .sx h3, .sx ul, .sx dl, .sx dd { margin: 0; }
+.sx ul, .sx dl { padding: 0 !important; margin-left: 0 !important; }   /* drop Streamlit's list indent */
+.sx li { margin-left: 0 !important; }
+.sx strong { font-weight: 600; color: var(--ink); }
+.sx a { color: inherit; }
+
+.overline { display: flex; align-items: center; gap: 16px; font-size: 15px; font-weight: 500; color: var(--ink); }
+.rule { width: 56px; height: 1.5px; background: var(--sage); flex: none; }
+.sec-title { margin-top: 16px !important; font: 700 clamp(30px, 3.6vw, 50px)/1.08 var(--sans); letter-spacing: -.035em;
+  text-wrap: balance; scroll-margin-top: 80px; }
+.lead { max-width: 780px; margin-top: 18px !important; color: var(--ink-2); font-size: 17px; line-height: 1.85; }
+.prose { max-width: 820px; color: var(--ink-2); font-size: 16px; line-height: 1.85; }
+.prose p + p { margin-top: 12px; }
+.prose h3 { margin: 6px 0 6px; font-size: 19px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.muted { color: var(--muted); }
+.formula { display: inline-block; margin: 6px 0; padding: 10px 18px; border-radius: 16px; background: var(--soft);
+  color: var(--ink); font-size: 15.5px; font-weight: 600; }
+.caption { color: var(--muted); font-size: 14px; line-height: 1.7; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: none; }
+
+/* ---------------------------------------------------------------- nav + hero */
+
+.nav { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
+.brand { font: 700 15px var(--sans); letter-spacing: .28em; text-transform: uppercase; text-decoration: none; color: var(--ink); }
+.brand span { color: var(--sage-2); }
+.nav-links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-left: auto; }
+.nav-links a { padding-top: 10px; border-top: 1.5px solid var(--line-strong); color: var(--muted); font-size: 14px;
+  text-decoration: none; transition: color .2s, border-color .2s; }
+.nav-links a:hover { color: var(--ink); border-top-color: var(--ink); }
+
+.hero h1 { margin-top: 48px !important; font: 700 clamp(44px, 6vw, 86px)/1.03 var(--sans); letter-spacing: -.04em;
+  text-wrap: balance; }
+.hero .lead { max-width: 720px; font-size: clamp(17px, 1.5vw, 20px); font-weight: 500; color: var(--ink-2); }
+.actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+
+.pill { display: inline-flex; align-items: center; gap: 10px; height: 50px; padding: 0 26px; border: 1.5px solid transparent;
+  border-radius: 999px; font: 600 15px var(--sans); text-decoration: none; white-space: nowrap; transition: transform .2s; }
+.pill:hover { transform: translateY(-2px); }
+.pill-dark { background: var(--btn); color: var(--btn-fg) !important; }
+.pill-outline { border-color: var(--ink); color: var(--ink) !important; }
+
+/* key numbers: the homepage "stats" strip */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 64px; }
+.stat { position: relative; isolation: isolate; container-type: inline-size; padding: 8px 32px;
+  border-left: 1.5px solid var(--line); }
+.stat:first-child { padding-left: 0; border-left: 0; }
+/* font size follows the column width (cqi), so "10.6% → 18.3%" always fits */
+.stat-num { position: relative; padding-left: 30px; font: 600 clamp(24px, calc(11.5cqi - 2px), 48px)/1.05 var(--sans);
+  letter-spacing: -.035em; white-space: nowrap; }
+.sphere { position: absolute; z-index: -1; left: 0; top: -10px; width: 60px; height: 60px; border-radius: 50%;
+  background: var(--sphere); }
+.sphere-sage { background: var(--sphere-sage); }
+.stat-text { max-width: 330px; margin: 22px 0 0 30px !important; color: var(--muted); font-size: 15px; line-height: 1.8; }
+
+/* ---------------------------------------------------------------- cards */
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.card { padding: 26px 26px 28px; border-radius: 28px; background: var(--soft); }
+.card .num { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; font-weight: 600; }
+.card h3 { margin: 14px 0 8px !important; font-size: 19px; font-weight: 600; letter-spacing: -.015em; line-height: 1.3; }
+.card p { color: var(--muted); font-size: 15px; line-height: 1.75; }
+a.card { display: block; color: inherit; text-decoration: none; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+a.card:hover { transform: translateY(-4px); }
+
+/* result numbers (effect cards and simulator) */
+.kpi-group { display: flex; align-items: center; gap: 10px; margin: 4px 0 12px !important; font-size: 15px; font-weight: 600; }
+.kpi-row + .kpi-row { margin-top: 22px; }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.kpis-5 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.kpi { padding: 20px 22px 22px; border-radius: 24px; background: var(--soft); }
+.kpi-label { color: var(--muted); font-size: 13.5px; font-weight: 500; }
+.kpi-value { margin-top: 6px !important; font: 600 clamp(26px, 2.6vw, 36px)/1.1 var(--sans); letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums; }
+.kpi-delta { margin-top: 10px !important; color: var(--muted); font-size: 13.5px; }
+.kpi-delta b { display: inline-block; margin-right: 6px; padding: 2px 10px; border-radius: 999px; background: var(--sage);
+  color: #0f110f; font-weight: 600; font-variant-numeric: tabular-nums; }
+.kpi-delta b.neg { background: var(--line-strong); color: var(--ink); }
+.kpi-note { margin-top: 6px !important; color: var(--muted); font-size: 12.5px; }
+
+.callout { display: flex; gap: 14px; max-width: 900px; padding: 18px 22px; border-radius: 22px; background: var(--soft);
+  color: var(--ink-2); font-size: 15.5px; line-height: 1.75; }
+.callout .dot { margin-top: 9px; background: var(--sage-deep); }
+
+/* ---------------------------------------------------------------- diagram */
+
+/* built from HTML boxes: st.html strips SVG */
+.diagram { margin: 0; padding: 24px; border-radius: 28px; background: var(--soft); }
+.diagram figcaption { max-width: 820px; margin-top: 16px; color: var(--muted); font-size: 14.5px; line-height: 1.75; }
+.flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.25fr) auto minmax(0, 1fr);
+  align-items: center; gap: 14px; }
+.models { display: grid; gap: 12px; }
+.node { padding: 16px 18px; border: 1.5px solid var(--line-strong); border-radius: 20px; background: var(--panel); }
+.node p { color: var(--muted); font-size: 13.5px; line-height: 1.6; }
+.node .node-title { margin-bottom: 4px !important; color: var(--ink); font-size: 16px; font-weight: 600; }
+.node .node-out { margin-top: 4px !important; color: var(--ink-2); }
+.node-dark { border-color: var(--btn); background: var(--btn); }
+.node-dark .node-title { color: var(--btn-fg); }
+.node-dark p { color: var(--btn-fg); opacity: .78; }
+.arrow { color: var(--muted); font-size: 26px; line-height: 1; }
+
+/* ---------------------------------------------------------------- steps, chips, bullets */
+
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+.steps div { padding-top: 14px; border-top: 1.5px solid var(--line-strong); }
+.steps dt { color: var(--muted); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.steps dd { margin-top: 8px !important; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+
+/* project skills: a quiet strip under the nav (as on the WaterMap page) */
+.skills { display: grid; gap: 8px; margin-top: 40px !important; }
+.skills > div { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: center; gap: 12px; }
+.skills dt { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.skills dd { display: flex; flex-wrap: wrap; gap: 6px; }
+.skill { padding: 2px 10px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--muted);
+  font-size: 12px; line-height: 1.6; white-space: nowrap; }
+
+.bullets { display: grid; gap: 12px; max-width: 900px; padding: 0; list-style: none; }
+.prose + .bullets { margin-top: 16px !important; }
+.bullets li { position: relative; padding-left: 24px; color: var(--ink-2); font-size: 16px; line-height: 1.75; }
+.bullets li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--sage); }
+
+/* the dark "bottom line" panel */
+.bottom h2 { color: #ffffff; }
+.bottom .overline { color: #f1f5f1; }
+.bottom .bullets li { color: rgba(241, 245, 241, .78); font-size: 17px; }
+.bottom .bullets strong { color: #ffffff; }
+
+.footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding: 4px 28px 0;
+  color: var(--footer-ink); font-size: 13.5px; }
+.footer a { font-weight: 600; text-decoration: none; }
+.footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------------------------------------------------------------- Streamlit elements inside panels */
+
+[data-testid="stExpander"] details { border-radius: 22px; border-color: var(--line-strong); }
+[data-testid="stPlotlyChart"] { margin-top: 4px; }
+/* dropdowns: no text cursor, since typing is turned off (see PLAIN_DROPDOWNS in the app) */
+[data-testid="stSelectbox"] input { caret-color: transparent; cursor: pointer; }
+
+/* ---------------------------------------------------------------- responsive */
+
+@media (max-width: 1100px) {
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  [data-testid="stMainBlockContainer"] { padding: 16px 12px 40px; }
+  [class*="st-key-panel"] { padding: 36px 24px; border-radius: 32px; }
+  .stats { grid-template-columns: 1fr; margin-top: 40px; }
+  .stat, .stat:first-child { padding: 24px 0; border-left: 0; border-top: 1.5px solid var(--line); }
+  .stat:first-child { border-top: 0; }
+  .cards { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps { grid-template-columns: 1fr; }
+  .hero h1 { margin-top: 40px !important; }
+  .flow { grid-template-columns: 1fr; }
+  .arrow { justify-self: center; transform: rotate(90deg); }
+}
+@media (max-width: 520px) {
+  [class*="st-key-panel"] { padding: 28px 16px; border-radius: 26px; }
+  .kpis { grid-template-columns: 1fr; }
+  .nav-links { margin-left: 0; }
+  .skills > div { grid-template-columns: 1fr; gap: 6px; }
+}
