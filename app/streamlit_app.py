@@ -227,10 +227,10 @@ def hero(lifts: pd.DataFrame, het: pd.DataFrame) -> None:
         <div class="stat"><p class="stat-num"><span class="sphere sphere-sage"></span>
           +${men.loc['spend', 'abs_lift']:.2f}</p>
           <p class="stat-text">extra revenue per customer from the men's email, in the same two weeks.</p></div>
-        <div class="stat"><p class="stat-num"><span class="sphere"></span>{n_sig}</p>
-          <p class="stat-text">statistically significant customer feature{"" if n_sig == 1 else "s"} out of
-          {n_features}: the kind of products a customer buys (men's, women's or both). Only this changes how
-          strongly customers respond to the email.</p></div>
+        <div class="stat"><p class="stat-num"><span class="sphere"></span>{n_sig} out of {n_features}</p>
+          <p class="stat-text">statistically significant customer feature{"" if n_sig == 1 else "s"}: the kind of
+          products a customer buys (men's, women's or both). Only this changes how strongly customers respond to
+          the email.</p></div>
       </div>
     </div>""")
 
